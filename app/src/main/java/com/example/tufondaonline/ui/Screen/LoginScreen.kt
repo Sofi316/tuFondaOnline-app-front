@@ -44,10 +44,10 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize().padding(25.dp),
         verticalArrangement = Arrangement.Center
     ){
-        Image(
+        Image( //Imagen de la empresa
             painter = painterResource(R.drawable.fondasom),
             contentDescription = "Logo empresa",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
         OutlinedTextField(
             value = usuario.nombre,
@@ -96,7 +96,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(18.dp))
         Button(
             onClick = {
-                if (viewModel.validar()){
+                if (viewModel.validarLogin()){
                     navController.navigate(route = "Bienvenida")
                 }else{
                     Toast.makeText(contexto,"Debe aceptar los términos de la empresa",

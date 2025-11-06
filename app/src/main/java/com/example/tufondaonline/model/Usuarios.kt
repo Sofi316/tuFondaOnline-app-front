@@ -15,8 +15,14 @@ data class Usuarios(
 
 )
 data class UsuarioErrores(
+    val rut: String? = null,
     val nombre: String? = null,
+    val apellido: String? = null,
     val correo: String? = null,
+    val fechaNac: String? = null,
+    val direccion: String? = null,
+    val region: String? = null,
+    val comuna: String? = null,
     val password: String? = null,
     val acepterTerminos: String?=null
 )
