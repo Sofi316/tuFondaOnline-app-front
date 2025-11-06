@@ -1,7 +1,6 @@
-package com.example.tufondaonline.ui.Screen
+package com.example.tufondaonline.ui.screen
 
 import android.content.Context
-import android.text.Html
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -29,9 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.tufondaonline.viewmodel.UsuarioViewModel
 import com.example.tufondaonline.R
 import com.example.tufondaonline.viewmodel.UsuarioRegistroViewModel
 
