@@ -103,7 +103,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     // Navegar a la pantalla de registro
-                    navController.navigate(route = "RegistroUsuario")
+                    navController.navigate(route = "Registro")
                 }
             ) {
                 Text("Registrarse")

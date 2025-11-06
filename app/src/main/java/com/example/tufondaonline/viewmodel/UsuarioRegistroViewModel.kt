@@ -7,10 +7,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class UsuarioViewModel: ViewModel(){
+class UsuarioRegistroViewModel: ViewModel() {
     private val _usuario = MutableStateFlow(Usuarios())
     val usuario: StateFlow<Usuarios> =_usuario
 
+    fun onChangeRut(rut: String){
+        _usuario.update {
+            it.copy(
+                rut = rut,
+                errores = it.errores.copy(rut = null )
+            )
+        }
+    }
     fun onChangeNombre(nombre: String){
         _usuario.update {
             it.copy(
@@ -20,11 +28,29 @@ class UsuarioViewModel: ViewModel(){
         }
     }
 
+    fun onChangeApellido(apellido: String){
+        _usuario.update {
+            it.copy(
+                apellido = apellido,
+                errores = it.errores.copy(apellido = null )
+            )
+        }
+    }
+
     fun onChangeCorreo(correo: String){
         _usuario.update {
             it.copy(
                 correo = correo,
                 errores = it.errores.copy(correo = null )
+            )
+        }
+    }
+
+    fun onChangeDireccion(direccion: String){
+        _usuario.update {
+            it.copy(
+                direccion = direccion,
+                errores = it.errores.copy(direccion = null )
             )
         }
     }
@@ -42,7 +68,7 @@ class UsuarioViewModel: ViewModel(){
         _usuario.update { it.copy(aceptarTerminos = valor) }
     }
 
-    fun validarLogin(): Boolean{
+    fun validarRegistro(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
             nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
