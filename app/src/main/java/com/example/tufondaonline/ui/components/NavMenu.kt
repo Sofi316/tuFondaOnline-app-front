@@ -1,13 +1,17 @@
 
 package com.ejemplo.tufondaonline.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.tufondaonline.ui.theme.darkBlue
+import com.example.tufondaonline.ui.theme.lightBlue
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,15 +29,20 @@ fun NavBar() { // Renombrado para más claridad
         drawerState = drawerState,
         drawerContent = {
             // 'ModalDrawerSheet' es el contenedor blanco del menú
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.darkBlue
+            ) {
 
                 // 1. Tu Logo/Título
                 Text(
                     "Fonda Online",
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    color= Color.White
                 )
-                HorizontalDivider()
+                HorizontalDivider(color = Color.White)
+                Spacer(modifier = Modifier.height(12.dp))
+
 
                 // 2. Mapeamos tu lista de enlaces (SOLO NAVEGACIÓN)
                 navItems.forEach { item ->
@@ -44,7 +53,13 @@ fun NavBar() { // Renombrado para más claridad
                             selectedItem = item
                             scope.launch { drawerState.close() }
                             // Aquí irá la navegación
-                        }
+                        },
+                        colors= NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = MaterialTheme.colorScheme.lightBlue,
+                            unselectedContainerColor = Color.Transparent,
+                            unselectedTextColor = Color.White,
+
+                        )
                     )
                 }
                 // (Ya no están los botones de Sesión aquí)
@@ -55,6 +70,10 @@ fun NavBar() { // Renombrado para más claridad
         Scaffold(
             topBar = {
                 TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.darkBlue,
+                        titleContentColor = Color.White
+                    ),
                     // 3. Título (o logo)
                     title = { Text(text = "Fonda Online") },
 
@@ -63,7 +82,8 @@ fun NavBar() { // Renombrado para más claridad
                         IconButton(onClick = {
                             scope.launch { drawerState.open() }
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
+                            Icon(Icons.Default.Menu, contentDescription = "Abrir menú",
+                                tint = Color.White)
                         }
                     },
 
@@ -73,7 +93,12 @@ fun NavBar() { // Renombrado para más claridad
                             onClick = {
                                 // Aquí pones la lógica para navegar a la
                                 // pantalla de IniciarSesión
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.White,
+                                containerColor = Color.Red
+
+                            )
                         ) {
                             Text("Iniciar Sesión")
                         }
