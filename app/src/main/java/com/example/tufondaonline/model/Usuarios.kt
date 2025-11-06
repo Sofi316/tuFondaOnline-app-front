@@ -16,10 +16,7 @@ data class UsuarioErrores(
     val nombre: String? = null,
     val apellido: String? = null,
     val correo: String? = null,
-    val fechaNac: String? = null,
     val direccion: String? = null,
-    val region: String? = null,
-    val comuna: String? = null,
     val password: String? = null,
     val acepterTerminos: String?=null
 )
