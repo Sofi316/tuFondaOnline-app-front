@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ejemplo.tufondaonline.ui.components.NavBar
+import com.example.tufondaonline.navegate.AppNavigate
 import com.example.tufondaonline.ui.theme.TuFondaOnlineTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TuFondaOnlineTheme {
-                NavBar()
+                AppNavigate()
             }
         }
     }

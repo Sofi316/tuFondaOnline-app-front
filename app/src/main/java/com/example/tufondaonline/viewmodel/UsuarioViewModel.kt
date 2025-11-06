@@ -19,11 +19,12 @@ class UsuarioViewModel: ViewModel(){
             )
         }
     }
+
     fun onChangeCorreo(correo: String){
         _usuario.update {
             it.copy(
-                nombre = correo,
-                errores = it.errores.copy(password = null )
+                correo = correo,
+                errores = it.errores.copy(correo = null )
             )
         }
     }
@@ -31,21 +32,28 @@ class UsuarioViewModel: ViewModel(){
         _usuario.update {
             it.copy(
                 password = pass,
-                errores = it.errores.copy(correo = null )
+                errores = it.errores.copy(password = null )
             )
         }
     }
+
+    fun onChangeAceptarTerminos(valor: Boolean){
+        _usuario.update { it.copy(aceptarTerminos = valor) }
+    }
+
     fun validar(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
-            nombre = if (u.nombre.isBlank()) "El nombre no puede quedar vacio" else null,
+            nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
             correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
-            password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null
+            password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
+            acepterTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.nombre!=null && errores.correo!=null){
+        if (errores.nombre==null && errores.correo==null && errores.password==null
+            && errores.acepterTerminos==null){
             return true
         }else{
             return false
