@@ -47,15 +47,6 @@ class UsuarioViewModel: ViewModel(){
         }
     }
 
-    fun onChangeFechaNac(fechaNac: String){
-        _usuario.update {
-            it.copy(
-                fechaNac = fechaNac,
-                errores = it.errores.copy(fechaNac = null )
-            )
-        }
-    }
-
     fun onChangeDireccion(direccion: String){
         _usuario.update {
             it.copy(
@@ -65,23 +56,6 @@ class UsuarioViewModel: ViewModel(){
         }
     }
 
-    fun onChangeRegion(region: String){
-        _usuario.update {
-            it.copy(
-                region = region,
-                errores = it.errores.copy(region = null )
-            )
-        }
-    }
-
-    fun onChangeComuna(comuna: String){
-        _usuario.update {
-            it.copy(
-                comuna = comuna,
-                errores = it.errores.copy(comuna = null )
-            )
-        }
-    }
     fun onChangePassword(pass: String){
         _usuario.update {
             it.copy(
