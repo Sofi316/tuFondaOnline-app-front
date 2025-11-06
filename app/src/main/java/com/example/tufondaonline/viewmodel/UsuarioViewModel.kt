@@ -45,16 +45,13 @@ class UsuarioViewModel: ViewModel(){
     fun validarLogin(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
-            nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
             correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
-            acepterTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.nombre==null && errores.correo==null && errores.password==null
-            && errores.acepterTerminos==null){
+        if (errores.correo==null && errores.password==null){
             return true
         }else{
             return false

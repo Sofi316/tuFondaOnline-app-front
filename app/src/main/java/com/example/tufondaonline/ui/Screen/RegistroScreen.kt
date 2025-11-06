@@ -1,5 +1,6 @@
 package com.example.tufondaonline.ui.Screen
 
+import android.content.Context
 import android.text.Html
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -174,6 +175,12 @@ fun RegistroScreen(
         Button( //Botón ingresar
             onClick = {
                 if (viewModel.validarRegistro()) {
+                    val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putString("correo", usuario.correo)
+                        putString("password", usuario.password)
+                        apply()
+                    }
                     navController.navigate(route = "Login")
                     Toast.makeText(
                         contexto,
@@ -189,7 +196,7 @@ fun RegistroScreen(
                 }
             }
         ) {
-            Text("Ingresar")
+            Text("Registrarse")
         }
     }
 }
