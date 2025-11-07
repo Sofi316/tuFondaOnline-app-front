@@ -71,16 +71,24 @@ class UsuarioRegistroViewModel: ViewModel() {
     fun validarRegistro(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
+            rut = if (u.rut.isBlank()) "El rut no puede estar vacio" else null,
             nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
+            apellido = if (u.apellido.isBlank()) "El apellido no puede estar vacio" else null,
             correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
+            direccion = if (u.direccion.isBlank()) "La direccion no puede estar vacia" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
             acepterTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.nombre==null && errores.correo==null && errores.password==null
-            && errores.acepterTerminos==null){
+        if (errores.rut==null &&
+            errores.nombre==null &&
+            errores.apellido==null &&
+            errores.correo==null &&
+            errores.direccion== null &&
+            errores.password==null &&
+            errores.acepterTerminos==null){
             return true
         }else{
             return false

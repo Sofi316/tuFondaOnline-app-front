@@ -1,5 +1,6 @@
 package com.example.tufondaonline.ui.screen
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -84,19 +85,19 @@ fun LoginScreen(
             verticalAlignment = Alignment.CenterVertically, // Alineación vertical
 
         ) {
-            Button( //Botón ingresar
+            Button(
                 onClick = {
-                    if (viewModel.validarLogin()) {
-                        navController.navigate(route = "Bienvenida")
-                    } else {
-                        Toast.makeText(
-                            contexto,
-                            "Debe aceptar los términos de la empresa",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    if (viewModel.validarLogin()){
+                        val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
+                        val correoGuardado = sharedPref.getString("correo", null)
+                        val passwordGuardada = sharedPref.getString("password", null)
+                        if (usuario.correo == correoGuardado && usuario.password == passwordGuardada) {
+                            navController.navigate("Home")
                     }
+                } else {
+                    Toast.makeText(contexto, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show()
                 }
-            ) {
+            }) {
                 Text("Ingresar")
             }
             // Botón de Registro
