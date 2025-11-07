@@ -1,4 +1,3 @@
-
 package com.example.tufondaonline.ui.components
 
 import androidx.compose.foundation.Image
@@ -12,21 +11,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.tufondaonline.R
 import com.example.tufondaonline.ui.theme.darkBlue
 import com.example.tufondaonline.ui.theme.lightBlue
 import kotlinx.coroutines.launch
-import com.example.tufondaonline.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar() {
+fun NavBar(navController: NavController, content: @Composable () -> Unit) {
 
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItem by remember { mutableStateOf("Inicio") }
-    val navItems = listOf("Inicio", "Productos", "Ofertas", "Blogs", "Nosotros", "Contacto")
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val navItems = listOf("Inicio", "Productos", "Ofertas", "Nosotros", "Contacto")
 
 
     ModalNavigationDrawer(
@@ -36,7 +38,6 @@ fun NavBar() {
                 drawerContainerColor = MaterialTheme.colorScheme.darkBlue
             ) {
 
-                // 1. Tu Logo/Título
                 Image(
                     painter = painterResource(id = R.drawable.fonda),
                     contentDescription = "Logo de Fonda Online",
@@ -50,23 +51,36 @@ fun NavBar() {
 
 
                 navItems.forEach { item ->
+                    val selectionRoute = when (item) {
+                        "Inicio" -> "Home"
+                        "Productos" -> "Productos"
+                        else -> item
+                    }
+
                     NavigationDrawerItem(
                         label = { Text(text = item) },
-                        selected = item == selectedItem,
+                        selected = selectionRoute == currentRoute,
                         onClick = {
-                            selectedItem = item
                             scope.launch { drawerState.close() }
-                            // Aquí irá la navegación
+                            val navRoute = when (item) {
+                                "Productos" -> "Productos"
+                                else -> "Home"
+                            }
+                            navController.navigate(navRoute) {
+                                launchSingleTop = true
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                            }
                         },
-                        colors= NavigationDrawerItemDefaults.colors(
+                        colors = NavigationDrawerItemDefaults.colors(
                             selectedContainerColor = MaterialTheme.colorScheme.lightBlue,
                             unselectedContainerColor = Color.Transparent,
-                            unselectedTextColor = Color.White,
-
+                            selectedTextColor = Color.White,
+                            unselectedTextColor = Color.White
                         )
                     )
                 }
-
             }
         }
     ) {
@@ -94,14 +108,12 @@ fun NavBar() {
                 )
             }
         ) { paddingValues ->
-
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp)
             ) {
-                Text(text = "Contenido de la pantalla: $selectedItem")
+                content()
             }
         }
     }
