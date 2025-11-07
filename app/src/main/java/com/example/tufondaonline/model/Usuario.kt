@@ -1,6 +1,6 @@
 package com.example.tufondaonline.model
 
-data class Usuarios(
+data class Usuario(
     val rut: String="",
     val nombre: String="",
     val apellido: String="",
@@ -9,8 +9,8 @@ data class Usuarios(
     val password: String="",
     val aceptarTerminos: Boolean = false,
     val errores: UsuarioErrores = UsuarioErrores()
-
 )
+
 data class UsuarioErrores(
     val rut: String? = null,
     val nombre: String? = null,

@@ -92,7 +92,7 @@ fun LoginScreen(
                         val correoGuardado = sharedPref.getString("correo", null)
                         val passwordGuardada = sharedPref.getString("password", null)
                         if (usuario.correo == correoGuardado && usuario.password == passwordGuardada) {
-                            navController.navigate("Bienvenida")
+                            navController.navigate("Home")
                     }
                 } else {
                     Toast.makeText(contexto, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show()

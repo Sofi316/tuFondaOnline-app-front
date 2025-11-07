@@ -2,14 +2,14 @@ package com.example.tufondaonline.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.tufondaonline.model.UsuarioErrores
-import com.example.tufondaonline.model.Usuarios
+import com.example.tufondaonline.model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 class UsuarioRegistroViewModel: ViewModel() {
-    private val _usuario = MutableStateFlow(Usuarios())
-    val usuario: StateFlow<Usuarios> =_usuario
+    private val _usuario = MutableStateFlow(Usuario())
+    val usuario: StateFlow<Usuario> =_usuario
 
     fun onChangeRut(rut: String){
         _usuario.update {
