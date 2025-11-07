@@ -10,6 +10,10 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+// Colores personalizados para la app
+val White_Fondo = Color(0xFFFFFFFF)
+val Grey_Card = Color(0xFFF5F5F5) // Un gris claro para las tarjetas
+
 val DarkBlue = Color(0xFF0e1772)
 
 val LightBlue = Color(0xFF212d9d)
