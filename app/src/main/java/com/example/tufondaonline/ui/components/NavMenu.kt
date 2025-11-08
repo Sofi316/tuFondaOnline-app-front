@@ -54,6 +54,7 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                     val selectionRoute = when (item) {
                         "Inicio" -> "Home"
                         "Productos" -> "Productos"
+                        "Contacto" -> "Contacto"
                         else -> item
                     }
 
@@ -64,6 +65,7 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                             scope.launch { drawerState.close() }
                             val navRoute = when (item) {
                                 "Productos" -> "Productos"
+                                "Contacto" -> "Contacto"
                                 else -> "Home"
                             }
                             navController.navigate(navRoute) {

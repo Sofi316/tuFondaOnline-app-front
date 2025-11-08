@@ -169,6 +169,7 @@ fun RegistroScreen(
                 onCheckedChange = viewModel::onChangeAceptarTerminos)
             Text("Aceptar los terminos")
         }
+        Spacer(modifier = Modifier.height(18.dp))
         Button( //Botón ingresar
             onClick = {
                 if (viewModel.validarRegistro()) {
@@ -188,8 +189,7 @@ fun RegistroScreen(
                     Toast.makeText(
                         contexto,
                         "Debe aceptar los términos de la empresa",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.LENGTH_LONG).show()
                 }
             }
         ) {
