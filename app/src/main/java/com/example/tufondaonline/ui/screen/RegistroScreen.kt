@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,12 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tufondaonline.R
 import com.example.tufondaonline.viewmodel.UsuarioRegistroViewModel
+import androidx.compose.runtime.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun RegistroScreen(
     viewModel: UsuarioRegistroViewModel,
     navController: NavController
 ){
+    var cargando by remember { mutableStateOf(false) }
     val usuario by viewModel.usuario.collectAsState();
     var contexto = LocalContext.current
 
@@ -173,6 +179,13 @@ fun RegistroScreen(
         Button( //Botón ingresar
             onClick = {
                 if (viewModel.validarRegistro()) {
+                    cargando = true
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        cargando = false
+                        navController.navigate(route = "Login")
+                    }
+
                     val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         putString("correo", usuario.correo)
@@ -181,10 +194,8 @@ fun RegistroScreen(
                     }
                     Toast.makeText(
                         contexto,
-                        "Usuario registrado con éxito",
+                        "Registrando",
                         Toast.LENGTH_LONG).show()
-
-                    navController.navigate(route = "Login")
                 } else {
                     Toast.makeText(
                         contexto,
@@ -193,7 +204,14 @@ fun RegistroScreen(
                 }
             }
         ) {
-            Text("Registrarse")
+            if(cargando){
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.Blue
+                )
+            }else{
+                    Text("Registrarse")
+            }
         }
     }
 }
