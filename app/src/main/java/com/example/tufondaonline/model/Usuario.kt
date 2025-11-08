@@ -8,7 +8,6 @@ data class Usuario(
     val direccion: String="",
     val password: String="",
     val aceptarTerminos: Boolean = false,
-    val mensaje: String="",
     val errores: UsuarioErrores = UsuarioErrores()
 )
 
@@ -19,6 +18,5 @@ data class UsuarioErrores(
     val correo: String? = null,
     val direccion: String? = null,
     val password: String? = null,
-    val mensaje: String?=null,
     val acepterTerminos: String?=null
 )

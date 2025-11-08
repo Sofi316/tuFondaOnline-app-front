@@ -179,12 +179,12 @@ fun RegistroScreen(
                         putString("password", usuario.password)
                         apply()
                     }
-                    navController.navigate(route = "Login")
                     Toast.makeText(
                         contexto,
                         "Usuario registrado con éxito",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.LENGTH_LONG).show()
+
+                    navController.navigate(route = "Login")
                 } else {
                     Toast.makeText(
                         contexto,

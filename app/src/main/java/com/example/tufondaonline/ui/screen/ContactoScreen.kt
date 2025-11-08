@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +31,7 @@ fun ContactoScreen(
     viewModel: ContactoViewModel,
     navController: NavController
 ){
-    val usuario by viewModel.usuario.collectAsState();
+    val contacto by viewModel.contacto.collectAsState();
     var contexto = LocalContext.current
 
     Column(
@@ -39,67 +41,50 @@ fun ContactoScreen(
     ) {
         Text(
             text = "¿Necesitas ayuda? Contáctate con nosotros",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del nombre
+        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del asunto
         Text(
-            text = "NOMBRE",
+            text = "ASUNTO",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         OutlinedTextField(
-            value = usuario.nombre,
-            onValueChange = viewModel::onChangeNombre,
-            label = {Text("Ingrese su nombre")},
-            isError = usuario.errores.nombre!=null,
+            value = contacto.asunto,
+            onValueChange = viewModel::onChangeAsunto,
+            label = {Text("Reclamo, sugerencia, otro")},
+            isError = contacto.erroresContacto.asunto!=null,
             supportingText = {
-                usuario.errores.nombre?.let {
+                contacto.erroresContacto.asunto?.let {
                     Text(it, color = MaterialTheme.colorScheme.error)
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del correo
-        Text(
-            text = "CORREO",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 4.dp),
-            color = Color.Blue
-        )
-        Spacer(modifier = Modifier.height(18.dp))
-        OutlinedTextField(
-            value = usuario.correo,
-            onValueChange = viewModel::onChangeCorreo,
-            label = {Text("Ingrese su correo")},
-            isError = usuario.errores.correo!=null,
-            supportingText = {
-                usuario.errores.correo?.let {
-                    Text(it, color = MaterialTheme.colorScheme.error)
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del mensaje
+        Spacer(modifier = Modifier.height(15.dp)) //Cuadro del mensaje
         Text(
             text = "MENSAJE",
             style = MaterialTheme.typography.bodyMedium, //
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         OutlinedTextField(
-            value = usuario.mensaje,
+            value = contacto.mensaje,
             onValueChange = viewModel::onChangeMensaje,
-            label = {Text("Ingrese su mensaje")},
-            isError = usuario.errores.mensaje!=null,
+            label = { Text("El mensaje no puede superar los 100 caracteres")},
+            isError = contacto.erroresContacto.mensaje!=null,
             supportingText = {
-                usuario.errores.mensaje?.let {
+                contacto.erroresContacto.mensaje?.let {
                     Text(it, color = MaterialTheme.colorScheme.error)
                 }
-            }
+            },
+            modifier = Modifier.fillMaxWidth().height(180.dp)
         )
+        Spacer(modifier = Modifier.height(15.dp))
         Button(
             onClick = {
                 if(viewModel.validarContacto()){
@@ -107,6 +92,7 @@ fun ContactoScreen(
                         contexto,
                         "Mensaje enviado correctamente",
                         Toast.LENGTH_LONG).show()
+                    navController.navigate(route = "Home")
                 }else{
                     Toast.makeText(
                         contexto,
