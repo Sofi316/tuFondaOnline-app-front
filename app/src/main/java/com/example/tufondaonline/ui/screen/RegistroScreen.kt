@@ -184,6 +184,10 @@ fun RegistroScreen(
                         delay(3000)
                         cargando = false
                         navController.navigate(route = "Login")
+                        Toast.makeText(
+                            contexto,
+                            "Usuario creado",
+                            Toast.LENGTH_SHORT).show()
                     }
 
                     val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
@@ -195,7 +199,7 @@ fun RegistroScreen(
                     Toast.makeText(
                         contexto,
                         "Registrando",
-                        Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(
                         contexto,
