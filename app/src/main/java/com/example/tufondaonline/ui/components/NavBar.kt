@@ -3,7 +3,9 @@ package com.example.tufondaonline.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -63,7 +65,9 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                         onClick = {
                             scope.launch { drawerState.close() }
                             val navRoute = when (item) {
+                                "Inicio"->"Home"
                                 "Productos" -> "Productos"
+                                "Ofertas" ->"Ofertas"
                                 else -> "Home"
                             }
                             navController.navigate(navRoute) {
@@ -103,7 +107,25 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                             Icon(Icons.Default.Menu, contentDescription = "Abrir menú",
                                 tint = Color.White)
                         }
+                    },
+                    actions = {
+                        IconButton(onClick={ navController.navigate("Carrito")}){
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Carrito de compras",
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(onClick={ navController.navigate("Perfil")}){
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Perfil de usuario",
+                                tint = Color.White
+                            )
+                        }
+
                     }
+
 
                 )
             }
