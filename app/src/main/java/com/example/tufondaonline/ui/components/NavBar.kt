@@ -65,9 +65,10 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                         onClick = {
                             scope.launch { drawerState.close() }
                             val navRoute = when (item) {
-                                "Inicio"->"Home"
+                                "Inicio" -> "Home"
                                 "Productos" -> "Productos"
-                                "Ofertas" ->"Ofertas"
+                                "Ofertas" -> "Ofertas"
+                                "Nosotros" -> "Nosotros"
                                 else -> "Home"
                             }
                             navController.navigate(navRoute) {
