@@ -33,6 +33,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.tasks.await
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 
 @Composable
 fun CarritoScreen(){
@@ -121,7 +122,7 @@ fun ConseguirGeolocalizacion(){
                     Modifier.fillMaxWidth().height(300.dp),
                     mapViewportState = rememberMapViewportState {
                         setCameraOptions {
-                            zoom(20.0)
+                            zoom(18.0)
                             center(Point.fromLngLat(longitude, latitude))
                             pitch(0.0)
                             bearing(0.0)
