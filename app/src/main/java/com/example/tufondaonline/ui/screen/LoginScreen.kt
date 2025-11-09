@@ -92,6 +92,20 @@ fun LoginScreen(
                         val correoGuardado = sharedPref.getString("correo", null)
                         val passwordGuardada = sharedPref.getString("password", null)
                         if (usuario.correo == correoGuardado && usuario.password == passwordGuardada) {
+                            val rutGuardado = sharedPref.getString("rut", "") ?: ""
+                            val nombreGuardado = sharedPref.getString("nombre", "") ?: ""
+                            val apellidoGuardado = sharedPref.getString("apellido", "") ?: ""
+                            val direccionGuardada = sharedPref.getString("direccion", "") ?: ""
+
+                            viewModel.cargarUsuarioCompleto(
+                                rut = rutGuardado,
+                                nombre = nombreGuardado,
+                                apellido = apellidoGuardado,
+                                correo = correoGuardado!!, // Sabemos que no es nulo por la comprobación.
+                                direccion = direccionGuardada,
+                                password = passwordGuardada!!
+                            )
+
                             navController.navigate("Home")
                     }
                 } else {

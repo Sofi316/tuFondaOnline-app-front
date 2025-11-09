@@ -30,11 +30,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tufondaonline.R
-import com.example.tufondaonline.viewmodel.UsuarioRegistroViewModel
+import com.example.tufondaonline.viewmodel.UsuarioViewModel
 
 @Composable
 fun RegistroScreen(
-    viewModel: UsuarioRegistroViewModel,
+    viewModel: UsuarioViewModel,
     navController: NavController
 ){
     val usuario by viewModel.usuario.collectAsState();
@@ -174,7 +174,11 @@ fun RegistroScreen(
                 if (viewModel.validarRegistro()) {
                     val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
+                        putString("rut", usuario.rut)
+                        putString("nombre", usuario.nombre)
+                        putString("apellido", usuario.apellido)
                         putString("correo", usuario.correo)
+                        putString("direccion", usuario.direccion)
                         putString("password", usuario.password)
                         apply()
                     }

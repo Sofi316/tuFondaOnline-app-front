@@ -8,14 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tufondaonline.ui.screen.*
-import com.example.tufondaonline.viewmodel.UsuarioRegistroViewModel
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
 
 @Composable
 fun AppNavigate(){
     val navController = rememberNavController()
     val usuarioViewModel: UsuarioViewModel= viewModel()
-    val usuarioRegistroViewModel: UsuarioRegistroViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -26,7 +24,7 @@ fun AppNavigate(){
             LoginScreen(usuarioViewModel, navController)
         }
         composable(route = "Registro"){
-            RegistroScreen(usuarioRegistroViewModel,navController)
+            RegistroScreen(usuarioViewModel,navController)
         }
 
         composable(route = "Productos"){
@@ -57,7 +55,7 @@ fun AppNavigate(){
         }
         composable(route="Perfil"){
             MainScreen(navController = navController){
-                PerfilScreen()
+                PerfilScreen(usuarioViewModel,navController)
             }
         }
         composable(route="Ofertas"){
