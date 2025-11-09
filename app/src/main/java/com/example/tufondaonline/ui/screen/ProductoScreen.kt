@@ -1,6 +1,5 @@
 package com.example.tufondaonline.ui.screen
 
-import android.R
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -35,18 +34,18 @@ import com.example.tufondaonline.model.Producto
 @Composable
 fun MostrarProducto(producto: Producto){
     var expandido by remember { mutableStateOf(false) }
-    var contexto= LocalContext.current
+    val contexto = LocalContext.current
     Card(
-        modifier=Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ){
         Column(
-            modifier=Modifier.animateContentSize(
-                animationSpec=spring(
-                    dampingRatio= Spring.DampingRatioMediumBouncy,
-                    stiffness=Spring.StiffnessLow
+            modifier = Modifier.animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
                 )
             )
         ){
@@ -56,28 +55,28 @@ fun MostrarProducto(producto: Producto){
                 Modifier
                     .fillMaxWidth()
                     .height(if (expandido) 300.dp else 194.dp)
-                    .clickable{expandido=!expandido}
+                    .clickable { expandido = !expandido }
             )
             Row(
-                modifier= Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Text(
-                    text=producto.name,
-                    style=MaterialTheme.typography.titleMedium
+                    text = producto.name,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if(producto.enOferta && producto.precioOferta!=null){
+                    if (producto.enOferta && producto.precioOferta != null) {
                         Text("$${producto.precio}",
-                            style=MaterialTheme.typography.bodyMedium,
-                            color=Color.Gray,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
                             textDecoration = TextDecoration.LineThrough,
-                            modifier=Modifier.padding(end = 8.dp)
+                            modifier = Modifier.padding(end = 8.dp)
                         )
                         Text(
                             text = "$${producto.precioOferta}",
@@ -85,14 +84,12 @@ fun MostrarProducto(producto: Producto){
                             fontWeight = FontWeight.Bold,
                             color = Color.Red
                         )
-                    }else{
+                    } else {
                         Text(
                             text = "$${producto.precio}",
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
-
-
                 }
             }
             Button(
@@ -103,11 +100,11 @@ fun MostrarProducto(producto: Producto){
             ) {
                 Text("Agregar al carrito")
             }
-            if (expandido){
+            if (expandido) {
                 Text(
-                    text=producto.descripcion,
-                    style=MaterialTheme.typography.bodyMedium,
-                    modifier=Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    text = producto.descripcion,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                 )
             }
         }
@@ -115,7 +112,13 @@ fun MostrarProducto(producto: Producto){
 }
 
 @Composable
-fun ProductoScreen(){
+fun ProductoScreen(categoria: String) {
+
+    val productosFiltrados = if (categoria=="Todos"){
+        DataSource.productos
+    }else{
+        DataSource.productos.filter{it.categoria==categoria}
+    }
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxSize()
@@ -123,7 +126,7 @@ fun ProductoScreen(){
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            items(DataSource.productos){ producto ->
+            items(productosFiltrados) { producto ->
                 MostrarProducto(producto)
             }
         }

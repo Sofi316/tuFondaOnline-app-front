@@ -2,17 +2,12 @@ package com.example.tufondaonline.navigate
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tufondaonline.ui.screen.CarritoScreen
-import com.example.tufondaonline.ui.screen.HomeScreen
-import com.example.tufondaonline.ui.screen.RegistroScreen
-import com.example.tufondaonline.ui.screen.LoginScreen
-import com.example.tufondaonline.ui.screen.MainScreen
-import com.example.tufondaonline.ui.screen.OfertasScreen
-import com.example.tufondaonline.ui.screen.PerfilScreen
-import com.example.tufondaonline.ui.screen.ProductoScreen
+import androidx.navigation.navArgument
+import com.example.tufondaonline.ui.screen.*
 import com.example.tufondaonline.viewmodel.UsuarioRegistroViewModel
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
 
@@ -33,11 +28,23 @@ fun AppNavigate(){
         composable(route = "Registro"){
             RegistroScreen(usuarioRegistroViewModel,navController)
         }
+
         composable(route = "Productos"){
             MainScreen(navController = navController) {
-                ProductoScreen()
+                CategoriaScreen(navController = navController)
             }
         }
+
+        composable(
+            route = "Productos/{categoria}",
+            arguments = listOf(navArgument("categoria") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoria = backStackEntry.arguments?.getString("categoria") ?: ""
+            MainScreen(navController = navController) {
+                ProductoScreen(categoria = categoria)
+            }
+        }
+
         composable(route = "Home"){
             MainScreen(navController = navController) {
                 HomeScreen()
