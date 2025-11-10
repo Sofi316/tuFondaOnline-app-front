@@ -8,12 +8,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tufondaonline.ui.screen.*
+import com.example.tufondaonline.viewmodel.ContactoViewModel
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
 
 @Composable
 fun AppNavigate(){
     val navController = rememberNavController()
     val usuarioViewModel: UsuarioViewModel= viewModel()
+    val contactoViewModel: ContactoViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -32,6 +34,11 @@ fun AppNavigate(){
                 CategoriaScreen(navController = navController)
             }
         }
+        composable(route = "Ofertas"){
+            MainScreen(navController = navController) {
+                OfertasScreen()
+            }
+        }
 
         composable(
             route = "Productos/{categoria}",
@@ -48,19 +55,26 @@ fun AppNavigate(){
                 HomeScreen()
             }
         }
-        composable(route="Carrito"){
-            MainScreen(navController = navController){
-                CarritoScreen()
+
+        composable(route = "Nosotros"){
+            MainScreen(navController = navController) {
+                NosotrosScreen()
             }
         }
-        composable(route="Perfil"){
-            MainScreen(navController = navController){
+        composable(route = "Contacto"){
+            MainScreen(navController = navController) {
+                ContactoScreen(contactoViewModel,navController)
+            }
+        }
+
+        composable(route = "Perfil"){
+            MainScreen(navController = navController) {
                 PerfilScreen(usuarioViewModel,navController)
             }
         }
-        composable(route="Ofertas"){
-            MainScreen(navController = navController){
-                OfertasScreen()
+        composable(route = "Carrito"){
+            MainScreen(navController = navController) {
+                CarritoScreen()
             }
         }
     }

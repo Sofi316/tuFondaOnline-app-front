@@ -68,7 +68,9 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                                 "Inicio"->"Home"
                                 "Productos" -> "Productos"
                                 "Ofertas" ->"Ofertas"
-                                else -> "Home"
+                                "Nosotros" -> "Nosotros"
+                                "Contacto" ->"Contacto"
+                                else -> item
                             }
                             navController.navigate(navRoute) {
                                 launchSingleTop = true

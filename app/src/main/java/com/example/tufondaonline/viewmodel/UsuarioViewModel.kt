@@ -84,7 +84,7 @@ class UsuarioViewModel: ViewModel() {
             correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
             direccion = if (u.direccion.isBlank()) "La direccion no puede estar vacia" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
-            acepterTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
+            aceptarTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
         )
         _usuario.update {
             it.copy(errores = errores)
@@ -95,7 +95,7 @@ class UsuarioViewModel: ViewModel() {
             errores.correo==null &&
             errores.direccion== null &&
             errores.password==null &&
-            errores.acepterTerminos==null){
+            errores.aceptarTerminos==null){
             return true
         }else{
             return false
@@ -124,8 +124,8 @@ class UsuarioViewModel: ViewModel() {
                 apellido = apellido,
                 correo = correo,
                 direccion = direccion,
-                password = password, // Mantenemos la pass por si se necesita en otro lugar.
-                errores = UsuarioErrores() // Limpiamos cualquier error previo.
+                password = password,
+                errores = UsuarioErrores()
             )
         }
     }

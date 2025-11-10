@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,12 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tufondaonline.R
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
+import androidx.compose.runtime.*
+import kotlinx.coroutines.*
 
 @Composable
 fun RegistroScreen(
     viewModel: UsuarioViewModel,
     navController: NavController
 ){
+    var cargando by remember { mutableStateOf(false) }
     val usuario by viewModel.usuario.collectAsState();
     var contexto = LocalContext.current
 
@@ -53,13 +58,13 @@ fun RegistroScreen(
             contentDescription = "Logo empresa",
             contentScale = ContentScale.Crop
         )
-        Text( //Cuadro del rut
+        Text(
             text = "RUT",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
-        OutlinedTextField( //Cuadro del rut
+        OutlinedTextField(
             value = usuario.rut,
             onValueChange = viewModel::onChangeRut,
             label = {Text("Ej: 12345678-k")},
@@ -70,14 +75,14 @@ fun RegistroScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del nombre
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "NOMBRE",
-            style = MaterialTheme.typography.bodyMedium, //
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
-        OutlinedTextField( //Cuadro del nombre
+        OutlinedTextField(
             value = usuario.nombre,
             onValueChange = viewModel::onChangeNombre,
             label = {Text("Ingrese su nombre")},
@@ -88,10 +93,10 @@ fun RegistroScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del apellido
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "APELLIDO",
-            style = MaterialTheme.typography.bodyMedium, //
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
@@ -106,10 +111,10 @@ fun RegistroScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del correo
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "CORREO",
-            style = MaterialTheme.typography.bodyMedium, //
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
@@ -124,10 +129,10 @@ fun RegistroScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro de la direccion
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "DIRECCION",
-            style = MaterialTheme.typography.bodyMedium, //
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
@@ -142,10 +147,10 @@ fun RegistroScreen(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(18.dp)) //Cuadro del password
+        Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "CONTRASEÑA",
-            style = MaterialTheme.typography.bodyMedium, //
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 4.dp),
             color = Color.Blue
         )
@@ -169,9 +174,21 @@ fun RegistroScreen(
                 onCheckedChange = viewModel::onChangeAceptarTerminos)
             Text("Aceptar los terminos")
         }
-        Button( //Botón ingresar
+        Spacer(modifier = Modifier.height(18.dp))
+        Button(
             onClick = {
                 if (viewModel.validarRegistro()) {
+                    cargando = true
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        cargando = false
+                        navController.navigate(route = "Login")
+                        Toast.makeText(
+                            contexto,
+                            "Usuario creado",
+                            Toast.LENGTH_SHORT).show()
+                    }
+
                     val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         putString("rut", usuario.rut)
@@ -185,19 +202,34 @@ fun RegistroScreen(
                     navController.navigate(route = "Login")
                     Toast.makeText(
                         contexto,
-                        "Usuario registrado con éxito",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        "Registrando",
+                        Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(
-                        contexto,
-                        "Debe aceptar los términos de la empresa",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    val errores = viewModel.usuario.value.errores
+                    val mensajeDeError = listOfNotNull(
+                        errores.rut,
+                        errores.nombre,
+                        errores.apellido,
+                        errores.correo,
+                        errores.direccion,
+                        errores.password,
+                        errores.aceptarTerminos
+                    ).firstOrNull()
+
+                    mensajeDeError?.let {
+                        Toast.makeText(contexto, it, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         ) {
-            Text("Registrarse")
+            if(cargando){
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = Color.Blue
+                )
+            }else{
+                    Text("Registrarse")
+            }
         }
     }
 }

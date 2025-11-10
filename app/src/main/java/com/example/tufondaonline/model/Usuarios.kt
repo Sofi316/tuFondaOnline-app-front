@@ -21,5 +21,5 @@ data class UsuarioErrores(
     val region: String? = null,
     val comuna: String? = null,
     val password: String? = null,
-    val acepterTerminos: String?=null
+    val aceptarTerminos: String?=null
 )

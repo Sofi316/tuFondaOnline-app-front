@@ -33,7 +33,6 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.tasks.await
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 
 @Composable
 fun CarritoScreen(){
