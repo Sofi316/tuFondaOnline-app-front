@@ -41,7 +41,20 @@ android {
     }
 }
 
+// Reemplaza tu bloque dependencies completo con este
 dependencies {
+    implementation("androidx.camera:camera-camera2:1.5.0")
+    implementation("androidx.camera:camera-lifecycle:1.5.0")
+    implementation("androidx.camera:camera-view:1.5.0")
+    // Para la vista previa en compose (o usa AndroidView)
+    implementation("androidx.camera:camera-compose:1.0.0-alpha02")
+    // Para manejar los permisos fácilmente
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    // Dependencia para cargar la imagen después de ser capturada
+    implementation("io.coil-kt:coil-compose:2.1.0")
+    // ---- Catálogo de Versiones (libs) ----
+    // Estas son las dependencias que ya tienes en tu archivo libs.versions.toml
+    implementation(platform(libs.androidx.compose.bom)) // BOM gestiona las versiones de Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,11 +63,31 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.navigation.compose)
+
+    // ---- Dependencias de Mapbox ----
+    // Aplicamos la exclusión aquí. Asegúrate que estas versiones están en tu libs.versions.toml
+    implementation(libs.mapbox.maps.compose.ndk27) {
+        exclude(group = "xmlpull", module = "xmlpull")
+    }
+    implementation(libs.mapbox.maps.android.ndk27) {
+        exclude(group = "xmlpull", module = "xmlpull")
+    }
+
+    // ---- Dependencias de Google Play Services ----
+    // Asegúrate que estas versiones están en tu libs.versions.toml
+    implementation(libs.google.android.gms.play.services.location)
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    // ---- Dependencias de Test ----
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    // ---- Dependencias de Debug ----
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("androidx.compose.material:material-icons-extended")
 }
