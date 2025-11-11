@@ -34,7 +34,7 @@ class ContactoViewModel:  ViewModel() {
             asunto = if(u.asunto.isBlank()) "Debe llenar este casillero" else null,
             mensaje = when {
                 u.mensaje.isBlank() -> "El mensaje no puede estar vacío"
-                u.mensaje.length > 100 -> "El mensaje no puede superar los 100 caracteres"
+                u.mensaje.length > 300 -> "El mensaje no puede superar los 300 caracteres"
                 else -> null
             }
         )

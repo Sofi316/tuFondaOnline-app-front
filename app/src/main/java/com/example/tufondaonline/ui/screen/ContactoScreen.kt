@@ -82,7 +82,7 @@ fun ContactoScreen(
         OutlinedTextField(
             value = contacto.mensaje,
             onValueChange = viewModel::onChangeMensaje,
-            label = { Text("El mensaje no puede superar los 100 caracteres")},
+            label = { Text("El mensaje no puede superar los 300 caracteres")},
             isError = contacto.erroresContacto.mensaje!=null,
             supportingText = {
                 contacto.erroresContacto.mensaje?.let {
