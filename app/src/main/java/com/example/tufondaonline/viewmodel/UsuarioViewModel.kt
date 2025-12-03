@@ -195,13 +195,13 @@ class UsuarioViewModel: ViewModel() {
         _loginExitoso.value = false
         _usuario.value = Usuarios()
     }
-    fun cargarUsuarioCompleto(rut: String, nombre: String, apellido: String, correo: String, direccion: String, password: String) {
+    fun cargarUsuarioCompleto(rut: String, nombre: String, apellido: String, email: String, direccion: String, password: String) {
         _usuario.update {
             it.copy(
                 rut = rut,
                 nombre = nombre,
                 apellido = apellido,
-                email= correo,
+                email= email,
                 direccion = direccion,
                 password = password,
                 errores = UsuarioErrores()

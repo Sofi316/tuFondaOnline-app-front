@@ -69,13 +69,13 @@ fun LoginScreen(
             contentScale = ContentScale.Crop,
         )
         OutlinedTextField(
-            value = usuario.correo,
-            onValueChange = viewModel::onChangeCorreo,
+            value = usuario.email,
+            onValueChange = viewModel::onChangeEmail,
             label = {Text("Correo")},
-            isError = usuario.errores.correo!=null,
+            isError = usuario.errores.email!=null,
             leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Icono correo") },
             supportingText = {
-                usuario.errores.correo?.let {
+                usuario.errores.email?.let {
                     Text(it, color = MaterialTheme.colorScheme.error)
                 }
             }
@@ -109,9 +109,9 @@ fun LoginScreen(
                             delay(3000)
                             cargando= false
                             val sharedPref = contexto.getSharedPreferences("usuario_prefs", Context.MODE_PRIVATE)
-                            val correoGuardado = sharedPref.getString("correo", null)
+                            val emailGuardado = sharedPref.getString("email", null)
                             val passwordGuardada = sharedPref.getString("password", null)
-                            if (usuario.email== correoGuardado && usuario.password == passwordGuardada) {
+                            if (usuario.email== emailGuardado && usuario.password == passwordGuardada) {
                                 val rutGuardado = sharedPref.getString("rut", "") ?: ""
                                 val nombreGuardado = sharedPref.getString("nombre", "") ?: ""
                                 val apellidoGuardado = sharedPref.getString("apellido", "") ?: ""
@@ -121,7 +121,7 @@ fun LoginScreen(
                                     rut = rutGuardado,
                                     nombre = nombreGuardado,
                                     apellido = apellidoGuardado,
-                                    email= correoGuardado!!, // Sabemos que no es nulo por la comprobación.
+                                    email= emailGuardado!!, // Sabemos que no es nulo por la comprobación.
                                     direccion = direccionGuardada,
                                     password = passwordGuardada!!
                                 )
@@ -132,7 +132,7 @@ fun LoginScreen(
                                     "Ingreso exitoso",
                                     Toast.LENGTH_SHORT).show()
                             }
-                            if (usuario.correo!= correoGuardado || usuario.password!= passwordGuardada){
+                            if (usuario.email!= emailGuardado || usuario.password!= passwordGuardada){
                                 Toast.makeText(
                                     contexto,
                                     "Emailo contraseña incorrectos",
