@@ -70,6 +70,7 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
                                 "Ofertas" ->"Ofertas"
                                 "Nosotros" -> "Nosotros"
                                 "Contacto" ->"Contacto"
+                                "Pokemon" ->"Pokemon"
                                 else -> item
                             }
                             navController.navigate(navRoute) {

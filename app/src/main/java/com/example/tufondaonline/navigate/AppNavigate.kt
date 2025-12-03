@@ -77,5 +77,11 @@ fun AppNavigate(){
                 CarritoScreen()
             }
         }
+        composable(route = "Pokemon"){
+            val pokeViewModel = remember { PokemonViewModel() }
+            MainScreen(navController = navController) {
+                PokemonScreen(viewModel = pokeViewModel)
+            }
+        }
     }
 }

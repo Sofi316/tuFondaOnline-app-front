@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import com.example.tufondaonline.model.LoginRequest
+import com.example.tufondaonline.repository.UsuarioRepository
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class UsuarioViewModel: ViewModel() {
     private val _usuario = MutableStateFlow(Usuarios())
@@ -15,6 +19,12 @@ class UsuarioViewModel: ViewModel() {
     private val _imagenPerfilUri = MutableStateFlow<Uri?>(null)
     val imagenPerfilUri: StateFlow<Uri?> = _imagenPerfilUri.asStateFlow()
 
+    private val repository = UsuarioRepository()
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _loginExitoso = MutableStateFlow(false)
+    val loginExitoso = _loginExitoso.asStateFlow()
     fun onCambiarImagenUri(uri: Uri?) {
         _imagenPerfilUri.value = uri
     }
@@ -44,11 +54,11 @@ class UsuarioViewModel: ViewModel() {
         }
     }
 
-    fun onChangeCorreo(correo: String){
+    fun onChangeEmail(email: String){
         _usuario.update {
             it.copy(
-                correo = correo,
-                errores = it.errores.copy(correo = null )
+                email= email,
+                errores = it.errores.copy(email= null )
             )
         }
     }
@@ -75,13 +85,17 @@ class UsuarioViewModel: ViewModel() {
         _usuario.update { it.copy(aceptarTerminos = valor) }
     }
 
+    fun onChangeComuna(idComuna: Long) {}
+
+    fun onChangeRegion(idRegion: Long) {}
+
     fun validarRegistro(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
             rut = if (u.rut.isBlank()) "El rut no puede estar vacio" else null,
             nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
             apellido = if (u.apellido.isBlank()) "El apellido no puede estar vacio" else null,
-            correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
+            email= if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
             direccion = if (u.direccion.isBlank()) "La direccion no puede estar vacia" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
             aceptarTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
@@ -92,7 +106,7 @@ class UsuarioViewModel: ViewModel() {
         if (errores.rut==null &&
             errores.nombre==null &&
             errores.apellido==null &&
-            errores.correo==null &&
+            errores.email==null &&
             errores.direccion== null &&
             errores.password==null &&
             errores.aceptarTerminos==null){
@@ -104,17 +118,82 @@ class UsuarioViewModel: ViewModel() {
     fun validarLogin(): Boolean{
         val u = _usuario.value
         val errores = UsuarioErrores(
-            correo = if (u.correo.isBlank() || !u.correo.contains("@")) "Ingrese un formato valido" else null,
+            email= if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.correo==null && errores.password==null){
+        if (errores.email==null && errores.password==null){
             return true
         }else{
             return false
         }
+    }
+    fun intentarLogin() {
+        if (validarLogin()) {
+            viewModelScope.launch {
+                _isLoading.value = true
+                val u = _usuario.value
+                try {
+                    val response = repository.hacerLogin(LoginRequest(u.email, u.password))
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val usuarioRecibido = response.body()!!
+
+                        _usuario.update {
+                            usuarioRecibido.copy(
+                                password = "",
+                                errores = UsuarioErrores()
+                            )
+                        }
+
+                        _loginExitoso.value = true
+                    } else {
+                        val error = UsuarioErrores(password = "Credenciales incorrectas")
+                        _usuario.update { it.copy(errores = error) }
+                    }
+                } catch (e: Exception) {
+                    val error = UsuarioErrores(email = "Error de conexión")
+                    _usuario.update { it.copy(errores = error) }
+                } finally {
+                    _isLoading.value = false
+                }
+            }
+        }
+    }
+
+    fun intentarRegistro() {
+        if (validarRegistro()) {
+            viewModelScope.launch {
+                _isLoading.value = true
+                try {
+                    val u = _usuario.value
+                    val nombreCompleto = "${u.nombre.trim()} ${u.apellido.trim()}"
+                    val usuarioParaEnviar = u.copy(nombre = nombreCompleto)
+
+                    val response = repository.hacerRegistro(usuarioParaEnviar)
+
+                    if (response.isSuccessful) {
+
+                        intentarLogin()
+                    } else {
+                        val error = UsuarioErrores(email = "Error: El correo ya existe")
+                        _usuario.update { it.copy(errores = error) }
+                    }
+                } catch (e: Exception) {
+                    val error = UsuarioErrores(email = "Sin conexión")
+                    _usuario.update { it.copy(errores = error) }
+                } finally {
+                    _isLoading.value = false
+                }
+            }
+        }
+    }
+
+    fun cerrarSesion() {
+        _loginExitoso.value = false
+        _usuario.value = Usuarios()
     }
     fun cargarUsuarioCompleto(rut: String, nombre: String, apellido: String, correo: String, direccion: String, password: String) {
         _usuario.update {
@@ -122,7 +201,7 @@ class UsuarioViewModel: ViewModel() {
                 rut = rut,
                 nombre = nombre,
                 apellido = apellido,
-                correo = correo,
+                email= correo,
                 direccion = direccion,
                 password = password,
                 errores = UsuarioErrores()
