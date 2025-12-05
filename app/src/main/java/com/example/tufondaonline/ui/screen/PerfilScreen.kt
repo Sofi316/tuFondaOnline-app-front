@@ -131,11 +131,6 @@ fun PerfilScreen(
                     HorizontalDivider()
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Apellido: ${usuario.apellido}")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HorizontalDivider()
-
-                    Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Correo: ${usuario.email}")
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()

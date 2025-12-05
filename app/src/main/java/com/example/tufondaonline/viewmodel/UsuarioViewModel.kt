@@ -153,7 +153,6 @@ class UsuarioViewModel: ViewModel() {
             viewModelScope.launch {
                 _isLoading.value = true
                 val u = _usuario.value
-                val emailTemp = _usuario.value.email
                 val passTemp = _usuario.value.password
                 try {
                     val response = repository.hacerLogin(LoginRequest(u.email, u.password))

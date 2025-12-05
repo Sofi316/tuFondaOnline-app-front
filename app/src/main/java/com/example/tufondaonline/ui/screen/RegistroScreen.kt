@@ -9,17 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,7 +34,6 @@ import androidx.navigation.NavController
 import com.example.tufondaonline.R
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
 import androidx.compose.runtime.*
-import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,15 +42,23 @@ fun RegistroScreen(
     navController: NavController
 ){
     val isLoading by viewModel.isLoading.collectAsState()
+    val loginExitoso by viewModel.loginExitoso.collectAsState()
     val regiones by viewModel.regiones.collectAsState()
     val comunas by viewModel.comunas.collectAsState()
-    var cargando by remember { mutableStateOf(false) }
     val usuario by viewModel.usuario.collectAsState();
     var contexto = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(true) {
         viewModel.cargarRegiones()
+    }
+    LaunchedEffect(loginExitoso) {
+        if (loginExitoso) {
+            Toast.makeText(contexto, "Registro exitoso", Toast.LENGTH_SHORT).show()
+
+            navController.navigate("Home") {
+                popUpTo("Registro") { inclusive = true }
+            }
+        }
     }
 
     LazyColumn(Modifier.fillMaxSize().padding(25.dp),
@@ -292,8 +295,6 @@ fun RegistroScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !isLoading
             ) {
-                val isLoading by viewModel.isLoading.collectAsState()
-
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
                 } else {
