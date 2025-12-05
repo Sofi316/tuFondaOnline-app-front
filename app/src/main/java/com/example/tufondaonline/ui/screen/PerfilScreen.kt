@@ -68,12 +68,10 @@ fun PerfilScreen(
 
     var uriParaLaCamara by remember { mutableStateOf<Uri?>(null) }
 
-
     val lanzarCamara = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-
             uriParaLaCamara?.let { viewModel.onCambiarImagenUri(it) }
         }
     }
@@ -82,7 +80,9 @@ fun PerfilScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            lanzarCamara.launch(uriParaLaCamara)
+            val uri= getNewImageUri(contexto)
+            uriParaLaCamara = uri
+            lanzarCamara.launch(uri)
         }
     }
 
@@ -92,9 +92,13 @@ fun PerfilScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         item {
             Image(
-                painter = if (imagenPerfilUri != null) rememberAsyncImagePainter(imagenPerfilUri) else rememberVectorPainter(image = Icons.Default.Person),
+                painter = if (imagenPerfilUri != null)
+                    rememberAsyncImagePainter(imagenPerfilUri)
+                else
+                    rememberVectorPainter(image = Icons.Default.Person),
                 contentDescription = "Foto de perfil",
                 modifier = Modifier
                     .size(200.dp)
@@ -116,25 +120,45 @@ fun PerfilScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
+
                     Text(text = "RUT: ${usuario.rut}")
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Nombre: ${usuario.nombre}")
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Apellido: ${usuario.apellido}")
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Correo: ${usuario.correo}")
+                    Text(text = "Correo: ${usuario.email}")
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Dirección: ${usuario.direccion}")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HorizontalDivider()
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Región: ${usuario.comuna?.region?.nombre ?: "No registrado"}"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HorizontalDivider()
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Comuna: ${usuario.comuna?.nombre ?: "No registrado"}"
+                    )
                 }
             }
         }
     }
 }
+

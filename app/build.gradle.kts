@@ -92,6 +92,7 @@ dependencies {
     // Asegúrate que estas versiones están en tu libs.versions.toml
     implementation(libs.google.android.gms.play.services.location)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.androidx.material3)
 
     // ---- Dependencias de Test ----
     testImplementation(libs.junit)

@@ -10,6 +10,8 @@ import androidx.navigation.navArgument
 import com.example.tufondaonline.ui.screen.*
 import com.example.tufondaonline.viewmodel.ContactoViewModel
 import com.example.tufondaonline.viewmodel.UsuarioViewModel
+import com.example.tufondaonline.viewmodel.PokemonViewModel
+import androidx.compose.runtime.remember
 
 @Composable
 fun AppNavigate(){

@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.example.tufondaonline.model.Comuna
 import com.example.tufondaonline.model.LoginRequest
+import com.example.tufondaonline.model.Region
+import com.example.tufondaonline.repository.RegionComunaRepository
 import com.example.tufondaonline.repository.UsuarioRepository
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,11 +23,26 @@ class UsuarioViewModel: ViewModel() {
     val imagenPerfilUri: StateFlow<Uri?> = _imagenPerfilUri.asStateFlow()
 
     private val repository = UsuarioRepository()
+    private val regionRepo = RegionComunaRepository()
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
     private val _loginExitoso = MutableStateFlow(false)
     val loginExitoso = _loginExitoso.asStateFlow()
+
+    private val _regiones = MutableStateFlow<List<Region>>(emptyList())
+    val regiones: StateFlow<List<Region>> = _regiones.asStateFlow()
+
+    private val _regionSeleccionada = MutableStateFlow<Region?>(null)
+    val regionSeleccionada: StateFlow<Region?> = _regionSeleccionada.asStateFlow()
+
+    private val _comunas = MutableStateFlow<List<Comuna>>(emptyList())
+    val comunas: StateFlow<List<Comuna>> = _comunas.asStateFlow()
+
+    private val _comunaSeleccionada = MutableStateFlow<Comuna?>(null)
+    val comunaSeleccionada: StateFlow<Comuna?> = _comunaSeleccionada.asStateFlow()
+
     fun onCambiarImagenUri(uri: Uri?) {
         _imagenPerfilUri.value = uri
     }
@@ -135,6 +153,8 @@ class UsuarioViewModel: ViewModel() {
             viewModelScope.launch {
                 _isLoading.value = true
                 val u = _usuario.value
+                val emailTemp = _usuario.value.email
+                val passTemp = _usuario.value.password
                 try {
                     val response = repository.hacerLogin(LoginRequest(u.email, u.password))
 
@@ -143,7 +163,7 @@ class UsuarioViewModel: ViewModel() {
 
                         _usuario.update {
                             usuarioRecibido.copy(
-                                password = "",
+                                password = passTemp,
                                 errores = UsuarioErrores()
                             )
                         }
@@ -195,6 +215,29 @@ class UsuarioViewModel: ViewModel() {
         _loginExitoso.value = false
         _usuario.value = Usuarios()
     }
+
+    fun cargarRegiones() {
+        viewModelScope.launch {
+            try {
+                val response = regionRepo.obtenerRegiones()
+                if (response.isSuccessful) {
+                    _regiones.value = response.body()!!
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
+    fun cargarComunas(idRegion: Long) {
+        viewModelScope.launch {
+            try {
+                val response = regionRepo.obtenerComunasPorRegion(idRegion)
+                if (response.isSuccessful) {
+                    _comunas.value = response.body()!!
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
     fun cargarUsuarioCompleto(rut: String, nombre: String, apellido: String, email: String, direccion: String, password: String) {
         _usuario.update {
             it.copy(

@@ -30,7 +30,7 @@ fun NavBar(navController: NavController, content: @Composable () -> Unit) {
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val navItems = listOf("Inicio", "Productos", "Ofertas", "Nosotros", "Contacto")
+    val navItems = listOf("Inicio", "Productos", "Ofertas", "Nosotros", "Contacto","Pokemon")
 
 
     ModalNavigationDrawer(
