@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -106,11 +107,13 @@ fun CardBienvenida() {
             verticalArrangement = Arrangement.Center
         ){
             Text(
+                modifier=Modifier.testTag("bienvenida"),
                 text = "Bienvenido a tu fonda Online",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
                 color= MaterialTheme.colorScheme.darkBlue
+
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -149,7 +152,7 @@ fun CardConImagenDeFondo() {
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Light,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp).testTag("recordatorio")
             )
         }
     }
