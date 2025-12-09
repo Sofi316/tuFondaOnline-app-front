@@ -45,7 +45,7 @@ fun RegistroScreen(
     val loginExitoso by viewModel.loginExitoso.collectAsState()
     val regiones by viewModel.regiones.collectAsState()
     val comunas by viewModel.comunas.collectAsState()
-    val usuario by viewModel.usuario.collectAsState();
+    val usuario by viewModel.usuario.collectAsState()
     var contexto = LocalContext.current
 
     LaunchedEffect(true) {
@@ -200,7 +200,6 @@ fun RegistroScreen(
                                 onClick = {
                                     selectedText = region.nombre
                                     viewModel.onChangeRegion(region.id)
-                                    viewModel.cargarComunas(region.id)
                                     expanded = false
                                 }
                             )

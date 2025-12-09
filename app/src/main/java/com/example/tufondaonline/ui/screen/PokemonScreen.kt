@@ -24,17 +24,12 @@ import com.example.tufondaonline.viewmodel.PokemonViewModel
 fun PokemonScreen(viewModel: PokemonViewModel) {
     val pokemon by viewModel.pokemonState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    var intentoUsuario by remember { mutableStateOf("") }
-    var mensajeResultado by remember { mutableStateOf("") }
-    var esCorrecto by remember { mutableStateOf(false) }
+    var intentoUsuario by remember(pokemon) { mutableStateOf("") }
+    var mensajeResultado by remember(pokemon) { mutableStateOf("") }
+    var esCorrecto by remember(pokemon) { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    LaunchedEffect(pokemon) {
-        intentoUsuario = ""
-        mensajeResultado = ""
-        esCorrecto = false
-    }
 
     fun verificarRespuesta() {
         pokemon?.let { poke ->

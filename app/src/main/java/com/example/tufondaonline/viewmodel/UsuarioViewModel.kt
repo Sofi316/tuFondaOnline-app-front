@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class UsuarioViewModel: ViewModel() {
     private val _usuario = MutableStateFlow(Usuarios())
-    val usuario: StateFlow<Usuarios> =_usuario
+    val usuario: StateFlow<Usuarios> = _usuario
     private val _imagenPerfilUri = MutableStateFlow<Uri?>(null)
     val imagenPerfilUri: StateFlow<Uri?> = _imagenPerfilUri.asStateFlow()
 
@@ -43,117 +43,142 @@ class UsuarioViewModel: ViewModel() {
     private val _comunaSeleccionada = MutableStateFlow<Comuna?>(null)
     val comunaSeleccionada: StateFlow<Comuna?> = _comunaSeleccionada.asStateFlow()
 
+    fun limpiarEstadoLogin() {
+        _loginExitoso.value = false
+    }
     fun onCambiarImagenUri(uri: Uri?) {
         _imagenPerfilUri.value = uri
     }
-    fun onChangeRut(rut: String){
+
+    fun onChangeRut(rut: String) {
         _usuario.update {
             it.copy(
                 rut = rut,
-                errores = it.errores.copy(rut = null )
+                errores = it.errores.copy(rut = null)
             )
         }
     }
-    fun onChangeNombre(nombre: String){
+
+    fun onChangeNombre(nombre: String) {
         _usuario.update {
             it.copy(
                 nombre = nombre,
-                errores = it.errores.copy(nombre = null )
+                errores = it.errores.copy(nombre = null)
             )
         }
     }
 
-    fun onChangeApellido(apellido: String){
+    fun onChangeApellido(apellido: String) {
         _usuario.update {
             it.copy(
                 apellido = apellido,
-                errores = it.errores.copy(apellido = null )
+                errores = it.errores.copy(apellido = null)
             )
         }
     }
 
-    fun onChangeEmail(email: String){
+    fun onChangeEmail(email: String) {
         _usuario.update {
             it.copy(
-                email= email,
-                errores = it.errores.copy(email= null )
+                email = email,
+                errores = it.errores.copy(email = null)
             )
         }
     }
 
-    fun onChangeDireccion(direccion: String){
+    fun onChangeDireccion(direccion: String) {
         _usuario.update {
             it.copy(
                 direccion = direccion,
-                errores = it.errores.copy(direccion = null )
+                errores = it.errores.copy(direccion = null)
             )
         }
     }
 
-    fun onChangePassword(pass: String){
+    fun onChangePassword(pass: String) {
         _usuario.update {
             it.copy(
                 password = pass,
-                errores = it.errores.copy(password = null )
+                errores = it.errores.copy(password = null)
             )
         }
     }
 
-    fun onChangeAceptarTerminos(valor: Boolean){
+    fun onChangeAceptarTerminos(valor: Boolean) {
         _usuario.update { it.copy(aceptarTerminos = valor) }
     }
 
-    fun onChangeComuna(idComuna: Long) {}
+    fun onChangeComuna(idComuna: Long) {
+        val comunaEncontrada = _comunas.value.find { it.id == idComuna }
+        _comunaSeleccionada.value = comunaEncontrada
+        _usuario.update {
+            it.copy(
+                comuna = comunaEncontrada
+            )
+        }
+    }
 
-    fun onChangeRegion(idRegion: Long) {}
+    fun onChangeRegion(idRegion: Long) {
+        val regionEncontrada = _regiones.value.find { it.id == idRegion }
 
-    fun validarRegistro(): Boolean{
+        _regionSeleccionada.value = regionEncontrada
+
+        _usuario.update {
+            it.copy(comuna = null)
+        }
+        cargarComunas(idRegion)
+    }
+
+    fun validarRegistro(): Boolean {
         val u = _usuario.value
         val errores = UsuarioErrores(
             rut = if (u.rut.isBlank()) "El rut no puede estar vacio" else null,
             nombre = if (u.nombre.isBlank()) "El nombre no puede estar vacio" else null,
             apellido = if (u.apellido.isBlank()) "El apellido no puede estar vacio" else null,
-            email= if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
+            email = if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
             direccion = if (u.direccion.isBlank()) "La direccion no puede estar vacia" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
-            aceptarTerminos = if(u.aceptarTerminos==false) "Debe aceptar los términos de la empresa" else null
+            aceptarTerminos = if (u.aceptarTerminos == false) "Debe aceptar los términos de la empresa" else null
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.rut==null &&
-            errores.nombre==null &&
-            errores.apellido==null &&
-            errores.email==null &&
-            errores.direccion== null &&
-            errores.password==null &&
-            errores.aceptarTerminos==null){
+        if (errores.rut == null &&
+            errores.nombre == null &&
+            errores.apellido == null &&
+            errores.email == null &&
+            errores.direccion == null &&
+            errores.password == null &&
+            errores.aceptarTerminos == null
+        ) {
             return true
-        }else{
+        } else {
             return false
         }
     }
-    fun validarLogin(): Boolean{
+
+    fun validarLogin(): Boolean {
         val u = _usuario.value
         val errores = UsuarioErrores(
-            email= if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
+            email = if (u.email.isBlank() || !u.email.contains("@")) "Ingrese un formato valido" else null,
             password = if (u.password.isBlank()) "La contraseña no puede estar vacía" else null,
         )
         _usuario.update {
             it.copy(errores = errores)
         }
-        if (errores.email==null && errores.password==null){
+        if (errores.email == null && errores.password == null) {
             return true
-        }else{
+        } else {
             return false
         }
     }
+
     fun intentarLogin() {
         if (validarLogin()) {
             viewModelScope.launch {
                 _isLoading.value = true
                 val u = _usuario.value
-                val passTemp = _usuario.value.password
+                val passTemp = u.password
                 try {
                     val response = repository.hacerLogin(LoginRequest(u.email, u.password))
 
@@ -166,7 +191,6 @@ class UsuarioViewModel: ViewModel() {
                                 errores = UsuarioErrores()
                             )
                         }
-
                         _loginExitoso.value = true
                     } else {
                         val error = UsuarioErrores(password = "Credenciales incorrectas")
@@ -222,7 +246,8 @@ class UsuarioViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     _regiones.value = response.body()!!
                 }
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -233,22 +258,11 @@ class UsuarioViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     _comunas.value = response.body()!!
                 }
-            } catch (_: Exception) {}
-        }
-    }
-
-    fun cargarUsuarioCompleto(rut: String, nombre: String, apellido: String, email: String, direccion: String, password: String) {
-        _usuario.update {
-            it.copy(
-                rut = rut,
-                nombre = nombre,
-                apellido = apellido,
-                email= email,
-                direccion = direccion,
-                password = password,
-                errores = UsuarioErrores()
-            )
+            } catch (_: Exception) {
+            }
         }
     }
 }
+
+
 

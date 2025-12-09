@@ -17,37 +17,42 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tufondaonline.R
+import com.example.tufondaonline.model.Producto
+import com.example.tufondaonline.ui.components.SectionTitle
+import com.example.tufondaonline.utils.obtenerImagenLocal
 import com.example.tufondaonline.ui.theme.TuFondaOnlineTheme
 import com.example.tufondaonline.ui.theme.darkBlue
+import com.example.tufondaonline.viewmodel.ProductoViewModel
 import kotlinx.coroutines.delay
-import com.example.tufondaonline.data.DataSource
-import com.example.tufondaonline.model.Producto
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
-import androidx.compose.ui.text.font.FontStyle
-import com.example.tufondaonline.ui.components.SectionTitle
-@Composable
 
+@Composable
 fun TestimonialCard(quote: String, author: String, modifier: Modifier = Modifier) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -84,6 +89,7 @@ fun TestimonialCard(quote: String, author: String, modifier: Modifier = Modifier
         }
     }
 }
+
 @Composable
 fun CardBienvenida() {
     ElevatedCard(
@@ -142,24 +148,25 @@ fun CardConImagenDeFondo() {
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Light,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(16.dp)
             )
-
         }
     }
 }
 
-
-
 @Composable
 fun ProductCard(producto: Producto, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val imagenId = obtenerImagenLocal(producto.img ?: "", context)
+
     Column(
         modifier = modifier.width(150.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = producto.image),
-            contentDescription = producto.name,
+            painter = painterResource(id = imagenId),
+            contentDescription = producto.nombre,
             modifier = Modifier
                 .size(140.dp)
                 .clip(RoundedCornerShape(12.dp)),
@@ -167,7 +174,7 @@ fun ProductCard(producto: Producto, modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = producto.name,
+            text = producto.nombre,
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
@@ -183,8 +190,7 @@ fun ProductCard(producto: Producto, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CarruselDeImagenes() {
-    val productos = DataSource.productos
+fun CarruselDeImagenes(productos: List<Producto>) {
     if (productos.isEmpty()) return
 
     val lazyListState = rememberLazyListState()
@@ -192,7 +198,10 @@ fun CarruselDeImagenes() {
     LaunchedEffect(Unit) {
         while(true) {
             delay(3000)
-            lazyListState.animateScrollToItem(index = lazyListState.firstVisibleItemIndex + 1)
+            try {
+                lazyListState.animateScrollToItem(index = lazyListState.firstVisibleItemIndex + 1)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -201,25 +210,27 @@ fun CarruselDeImagenes() {
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         items(count = Int.MAX_VALUE) { index ->
-
             val producto = productos[index % productos.size]
-
             ProductCard(producto = producto)
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    productoViewModel: ProductoViewModel = viewModel()
+) {
+    val productos by productoViewModel.productos.collectAsState()
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            CardConImagenDeFondo()}
+            CardConImagenDeFondo()
+        }
         item {
             Spacer(modifier = Modifier.height(16.dp))
             CardBienvenida()
@@ -230,11 +241,12 @@ fun HomeScreen() {
         }
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            CarruselDeImagenes()
+            // Pasamos la lista real de productos al carrusel
+            CarruselDeImagenes(productos = productos)
         }
 
         item {
-            Spacer(modifier = Modifier.height(24.dp)) //
+            Spacer(modifier = Modifier.height(24.dp))
             SectionTitle(title = "Lo que dicen nuestros clientes")
         }
         item {
@@ -264,4 +276,3 @@ fun HomeScreenPreview() {
         HomeScreen()
     }
 }
-
