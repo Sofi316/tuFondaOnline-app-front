@@ -28,7 +28,7 @@ class AdminRepositoryT() {
 
 class AdminProductosRepositoryT(private val apiService: ApiService) {
 
-        suspend fun obtenerProductos() = RetrofitInstance.apiBack.obtenerProductos()
+        suspend fun obtenerProductos() = apiService.obtenerProductos()
 
         suspend fun crearProducto(producto: Producto): Response<Producto> =
             RetrofitInstance.apiBack.crearProducto(producto)
@@ -39,8 +39,14 @@ class AdminProductosRepositoryT(private val apiService: ApiService) {
         suspend fun eliminarProducto(id: Long) =
             RetrofitInstance.apiBack.eliminarProducto(id)
 
-        suspend fun obtenerCategorias(): Response<List<Categoria>>{
-            return RetrofitInstance.apiBack.obtenerCategorias()
+        suspend fun obtenerCategorias(): List<Categoria>?{
+            val response = apiService.obtenerCategorias()
+            Log.d("D","Ingreso a Recuperar Categoria")
+            return if (response.isSuccessful){
+                return response.body()
+            }else{
+                emptyList()
+            }
         }
     }
 
