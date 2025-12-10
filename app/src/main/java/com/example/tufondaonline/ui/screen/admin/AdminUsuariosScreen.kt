@@ -34,8 +34,8 @@ fun AdminUsuariosScreen(
 
     LaunchedEffect(true) {
         usuarioViewModel.cargarRegiones()
-
     }
+
     Box(Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -46,6 +46,8 @@ fun AdminUsuariosScreen(
 
             Button(onClick = {
                 viewModel.usuarioEditando = null
+                usuarioViewModel.onChangeRegion(0L)
+                usuarioViewModel.onChangeComuna(0L)
                 viewModel.mostrarDialogo = true
             }) {
                 Text("Agregar Usuario")
@@ -69,7 +71,6 @@ fun AdminUsuariosScreen(
                                     }
                                     usuarioViewModel.onChangeComuna(comuna.id)
                                 }
-
                                 viewModel.mostrarDialogo = true
                             },
                             onDelete = {
@@ -86,7 +87,12 @@ fun AdminUsuariosScreen(
                 usuario = viewModel.usuarioEditando,
                 comunas = comunas,
                 viewModel = usuarioViewModel,
-                onDismiss = { viewModel.mostrarDialogo = false },
+                onDismiss = {
+                    viewModel.mostrarDialogo = false
+                    // Limpiar selecciones al cerrar
+                    usuarioViewModel.onChangeRegion(0L)
+                    usuarioViewModel.onChangeComuna(0L)
+                },
                 onSave = { usuario ->
                     if (usuario.id == 0L) {
                         viewModel.crearUsuario(usuario)
@@ -94,6 +100,9 @@ fun AdminUsuariosScreen(
                         viewModel.editarUsuario(usuario)
                     }
                     viewModel.mostrarDialogo = false
+                    // Limpiar selecciones después de guardar
+                    usuarioViewModel.onChangeRegion(0L)
+                    usuarioViewModel.onChangeComuna(0L)
                 }
             )
         }
@@ -212,7 +221,7 @@ fun MostrarUsuario(
                 OutlinedButton(
                     onClick = {
                         onDelete(usuario)
-                        Toast.makeText(contexto, "Usuario eliminado exitósamente", Toast.LENGTH_LONG).show()
+                        Toast.makeText(contexto, "Usuario eliminado exitosamente", Toast.LENGTH_LONG).show()
                     },
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
                 ) {
@@ -238,6 +247,7 @@ fun UsuarioFormDialog(
     val regiones by viewModel.regiones.collectAsState()
     val regionSeleccionada by viewModel.regionSeleccionada.collectAsState()
     val comunaSeleccionada by viewModel.comunaSeleccionada.collectAsState()
+
     var expandedRegion by remember { mutableStateOf(false) }
     var expandedComuna by remember { mutableStateOf(false) }
 
@@ -249,10 +259,17 @@ fun UsuarioFormDialog(
 
     LaunchedEffect(usuario) {
         if (usuario != null) {
+            nombre = usuario.nombre
+            email = usuario.email
+            rut = usuario.rut
+            direccion = usuario.direccion
+            rol = usuario.rol
+
             usuario.comuna?.let { comuna ->
                 comuna.region?.id?.let { regionId ->
                     viewModel.onChangeRegion(regionId)
                 }
+                kotlinx.coroutines.delay(100)
                 viewModel.onChangeComuna(comuna.id)
             }
         } else {
@@ -266,17 +283,28 @@ fun UsuarioFormDialog(
         confirmButton = {
             Button(onClick = {
                 if (rol == "ADMINISTRADOR" || rol == "CLIENTE") {
-                    onSave(
-                        Usuarios(
-                            id = usuario?.id ?: 0,
-                            nombre = nombre,
-                            email = email,
-                            rut = rut,
-                            direccion = direccion,
-                            comuna = comunaSeleccionada,
-                            rol = rol
+
+                    val comunaFinal = comunaSeleccionada
+
+                    if (comunaFinal != null) {
+                        onSave(
+                            Usuarios(
+                                id = usuario?.id ?: 0,
+                                nombre = nombre,
+                                email = email,
+                                rut = rut,
+                                direccion = direccion,
+                                comuna = comunaFinal,
+                                rol = rol
+                            )
                         )
-                    )
+                    } else {
+                        Toast.makeText(
+                            contexto,
+                            "Debe seleccionar una comuna",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 } else {
                     Toast.makeText(
                         contexto,
@@ -295,8 +323,10 @@ fun UsuarioFormDialog(
         },
         title = { Text(if (usuario == null) "Agregar Usuario" else "Editar Usuario") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 OutlinedTextField(
                     value = rut,
                     onValueChange = { rut = it },
@@ -359,6 +389,7 @@ fun UsuarioFormDialog(
                                     text = { Text(region.nombre) },
                                     onClick = {
                                         viewModel.onChangeRegion(region.id)
+                                        viewModel.onChangeComuna(0L) // Limpiar comuna al cambiar región
                                         expandedRegion = false
                                     }
                                 )
@@ -385,7 +416,7 @@ fun UsuarioFormDialog(
                     ) {
                         if (comunas.isEmpty()) {
                             DropdownMenuItem(
-                                text = { Text(if (regiones.isEmpty()) "Espere..." else "Seleccione una región primero") },
+                                text = { Text(if (regionSeleccionada == null) "Seleccione una región primero" else "Cargando comunas...") },
                                 onClick = {}
                             )
                         } else {
