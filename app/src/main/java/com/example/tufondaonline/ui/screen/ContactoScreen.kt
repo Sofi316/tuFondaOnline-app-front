@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tufondaonline.viewmodel.ContactoViewModel
@@ -49,7 +50,7 @@ fun ContactoScreen(
         Text(
             text = "¿Necesitas ayuda? Contáctate con nosotros",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(bottom = 4.dp).testTag("tituloContacto"),
             color = Color.Blue
         )
         Spacer(modifier = Modifier.height(18.dp)) //Cuadro del asunto
@@ -111,7 +112,8 @@ fun ContactoScreen(
                         "Por favor corrija los errores antes de enviar",
                         Toast.LENGTH_LONG).show()
                 }
-            }
+            },
+            modifier = Modifier.testTag("btnEnviar")
         ) {
             if(cargando){
                 CircularProgressIndicator(

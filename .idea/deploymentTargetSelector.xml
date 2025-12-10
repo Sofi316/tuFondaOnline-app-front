@@ -13,7 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="bienvenida_se_muestra()">
+      <SelectionState runConfigName="nuestra_mision_desc_se_muestra()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="valores_card_se_muestra_descripcion()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="ContactoTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="botonEnviarSeMuestra()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
