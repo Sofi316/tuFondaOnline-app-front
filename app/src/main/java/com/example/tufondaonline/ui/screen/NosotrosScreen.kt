@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -143,7 +144,8 @@ fun NuestraHistoriaCard() {
                     text = "De nuestra familia a la tuya",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.darkBlue
+                    color = MaterialTheme.colorScheme.darkBlue,
+
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -192,7 +194,8 @@ fun NuestraMisionCard() {
                         "manteniendo viva la tradición culinaria de " +
                         "nuestro país con cada pedido que entregamos.",
                 style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier= Modifier.testTag("TEXTO_DESC_MISION")
             )
         }
     }
@@ -213,11 +216,13 @@ fun ValorCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(imageVector = icon, contentDescription = title, tint = MaterialTheme.colorScheme.darkBlue)
+            Icon(imageVector = icon, contentDescription = title, tint = MaterialTheme.colorScheme.darkBlue,modifier = Modifier.testTag("ICON_VALORES"))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text(text = title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.testTag("TEXTO_TITULO_VALORES"))
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = description, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center)
+            Text(text = description, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center,
+                modifier = Modifier.testTag("TEXTO_DESC_VALORES"))
         }
     }
 }
